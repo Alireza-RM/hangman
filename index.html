@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link href="style.css" rel="stylesheet">
+  <script src="script.js" defer></script>
+  <title>Hangman</title>
+</head>
+
+<body>
+  <h1>Hangman</h1>
+  <section id="letters">
+    <div id="A">A</div>
+    <div id="B">B</div>
+    <div id="C">C</div>
+    <div id="D">D</div>
+    <div id="E">E</div>
+    <div id="F">F</div>
+    <div id="G">G</div>
+    <div id="H">H</div>
+    <div id="I">I</div>
+    <div id="J">J</div>
+    <div id="K">K</div>
+    <div id="L">L</div>
+    <div id="M">M</div>
+    <div id="N">N</div>
+    <div id="O">O</div>
+    <div id="P">P</div>
+    <div id="Q">Q</div>
+    <div id="R">R</div>
+    <div id="S">S</div>
+    <div id="T">T</div>
+    <div id="U">U</div>
+    <div id="V">V</div>
+    <div id="W">W</div>
+    <div id="X">X</div>
+    <div id="Y">Y</div>
+    <div id="Z">Z</div>
+  </section>
+
+  <section id="image">
+    <img src="assets/hangman0.png" alt="hangman">
+  </section>
+
+  <!-- Here you will display the hint for the message. Use an underscore for each letter and a space fo a space. -->
+  <section id="clue">
+    <p>________</p>
+  </section>
+
+  <!-- Show this message at the end of the game and reset the game. -->
+  <section id="gameover" style="margin-top: 80px;">
+    <p>Game Over</p>
+  </section>
+
+
+
+  <script>
+
+    const secretPhrases = ["never", "you", "tahat", "bullet", "break", "realmadrid"]
+
+    let randomItem = "";
+    let clicked = [];
+    let result = "";
+    let mistakes = 0;
+
+
+
+    function selectRandomItem() {
+      randomItem = secretPhrases[Math.floor(Math.random() * secretPhrases.length)]
+      document.getElementById("letters").addEventListener("click", buttonHandler);
+      window.addEventListener("keydown", keyHandler)
+      console.log(randomItem);
+    }
+
+
+
+    function checkIfWon() {
+      if (randomItem === result) {
+        document.getElementById("clue").querySelector("p").innerHTML = `<p style="color:green">You Win<p>`
+        document.getElementById("image").querySelector("img").src = "assets/winner.png"
+      }
+    }
+
+    function updateHangmanPicture() {
+      document.getElementById("image").querySelector("img").src = `assets/hangman${mistakes}.png`
+
+    }
+
+
+    function checkIflost() {
+      if (mistakes === 6) {
+        document.getElementById("gameover").querySelector("p").style.display = "block"
+        document.getElementById("clue").querySelector("p").innerHTML = `<p style="color:green"> <span style="color:red"> you are lose </span> <br> Random Word : <em style="color:blue">${randomItem}<em> <p> `
+
+      }
+    }
+
+    function setUnderScores() {
+      let splitedWord = randomItem.split("")
+      let mappedWord = splitedWord.map(item => clicked.indexOf(item) >= 0 ? item : "_")
+      result = mappedWord.join("")
+      document.getElementById("clue").querySelector("p").innerHTML = result
+
+
+      console.log(result)
+    }
+
+
+
+    function letterHandler(letter) {
+      letter = letter.toLowerCase();
+      clicked.indexOf(letter) === -1 ? clicked.push(letter) : null
+      document.getElementById(letter.toUpperCase()).className = "used"
+
+      if (randomItem.indexOf(letter) >= 0) {
+        setUnderScores()
+        checkIfWon()
+
+      } else if (randomItem.indexOf(letter) === -1) {
+        mistakes++;
+        checkIflost()
+        updateHangmanPicture()
+
+
+      }
+
+    }
+
+
+
+    function buttonHandler(event) {
+      letterHandler(event.target.id)
+    }
+
+    function keyHandler(event) {
+      letterHandler(event.key)
+
+    }
+
+
+
+
+
+    selectRandomItem()
+    setUnderScores()
+
+
+  </script>
+
+</body>
+
+</html>
